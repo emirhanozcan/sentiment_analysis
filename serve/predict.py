@@ -10,6 +10,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
+from pandas import compat
 
 from model import LSTMClassifier
 
@@ -89,8 +90,9 @@ def predict_fn(input_data, model):
     # TODO: Compute the result of applying the model to the input data. The variable `result` should
     #       be a numpy array which contains a single integer which is either 1 or 0
     
-    out = model(data).detach().cpu()
-    out = out.numpy()
-    result = np.round(out)
-
+    with torch.no_grad():
+        output = model.forward(data)
+        
+    result = np.round(output.numpy())
+    
     return result
